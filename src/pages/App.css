@@ -1,0 +1,40 @@
+
+.selected {
+    display: inline-block;
+    color: azure;
+    background-color: #465059;
+    border-radius: 3px;
+    transition: 0.1s ease;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+.tag {
+    color: beige;
+}
+
+.div-tag {
+    color: #eaa422;
+}
+
+.className {
+    color: #00b7b7;
+}
+
+.selected:hover {
+    color: azure;
+    background-color: #55616c;
+}
+
+.rawHtml > div {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #30373d;
+}
+
+.rawHtml > div > .number {
+    width: 36px;
+    color: #465059;
+    flex-shrink: 0;
+    user-select: none;
+}

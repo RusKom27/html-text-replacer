@@ -2,36 +2,38 @@ import './App.css'
 
 import {Divider, Container} from "@mui/material";
 import {Header} from "../widgets";
-import {FilesInputPanel} from "../features";
-import {useSelector} from "react-redux";
+import {FilesInputPanel, HtmlPanel, TranslatesPanel} from "../features";
 import {useEffect} from "react";
-import Typography from "@mui/material/Typography";
+import {useDispatch, useSelector} from "react-redux";
+import {setTranslatedTextBlocks} from "../features/files-input-panel/filesInputSlice.js";
 
 function App() {
+    const dispatch = useDispatch()
+    const currentLang = useSelector((state) => state.filesInput.currentLang)
+    const availableLangs = useSelector((state) => state.filesInput.availableLangs)
+    const textBlocks = useSelector((state) => state.filesInput.textBlocks)
+    const translatesTable = useSelector((state) => state.filesInput.translatesTable)
 
-    const rawHtml = useSelector((state) => state.filesInput.rawHtml)
 
     useEffect(() => {
+        // console.log(textBlocks);
+        //
+        // let translatedTextBlocks = [...textBlocks]
+        //
+        // textBlocks.forEach((textBlock, index) => {
+        //
+        //     const translatedTextBlock = translatesTable.filter((elem, index) => {
+        //         if (index !== availableLangs[currentLang]) return
+        //
+        //         return elem[textBlock]
+        //     })
+        //
+        //     translatedTextBlocks[index] = translatesTable[index][textBlock]
+        //     dispatch(setTranslatedTextBlocks(translatedTextBlocks))
+        // })
 
+    }, [textBlocks])
 
-        let rawHtmlContainer = document.querySelector(".rawHtml")
-
-        rawHtmlContainer.innerHTML = ""
-
-        rawHtml.split("\n").forEach(line => {
-
-            let tabs = countTabs(line)
-
-            for (let i = 0; i < tabs; i++) {
-                rawHtmlContainer.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;"
-            }
-
-
-            rawHtmlContainer.innerText += line
-            rawHtmlContainer.innerHTML += "<br>"
-        })
-
-    }, [rawHtml])
 
     return (
         <>
@@ -39,35 +41,11 @@ function App() {
             <Container maxWidth={"lg"}>
                 <FilesInputPanel/>
                 <Divider/>
-                <Typography backgroundColor={"#282e33"} className={"rawHtml"} color={"#e7c993"} variant={"body1"}
-                            fontFamily={"monospace"}></Typography>
-
+                <TranslatesPanel/>
+                <HtmlPanel/>
             </Container>
         </>
     )
-}
-
-function countTabs(line) {
-    let countSpaces = 0
-    let countTabs = 0
-
-    for (let i = 0; i < line.length; i++) {
-
-        if (countTabs > 0 && line[i] !== " ") {
-            return countTabs
-        }
-
-        if (line[i] === " ") {
-            countSpaces++
-        }
-
-        if (countSpaces === 3) {
-            countTabs++
-            countSpaces = 0
-        }
-    }
-
-    return countTabs
 }
 
 export default App
