@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "react";
 import Typography from "@mui/material/Typography";
-import {Box} from "@mui/material";
+import {Box, Button, Grid} from "@mui/material";
 import {addTextBlock, clearTextBlocks} from "../files-input-panel/filesInputSlice.js";
 
 function HtmlPanel() {
@@ -15,10 +15,12 @@ function HtmlPanel() {
         const doc = new DOMParser()
             .parseFromString(rawHtml, "text/html");
 
-        doc.documentElement
-            .querySelectorAll("p, h1, h2, h3, h4, h5, h6, table, tr, td, th")
+        doc.getElementsByTagName("html")[0]
+            .querySelectorAll("a, button, p, h1, h2, h3, h4, h5, h6, table, tr, td, th")
             .forEach((elem, index) => {
-                const textBlock = elem.innerText.replaceAll("\n", " ")
+                const textBlock = elem.innerHTML
+                    .replaceAll("\n", " ")
+                    .replaceAll(" <span class=\"currency\">$</span>", "$")
 
                 if (textBlock) dispatch(addTextBlock(textBlock.trim()))
 
@@ -28,13 +30,14 @@ function HtmlPanel() {
         let rawHtmlContainer = document.querySelector(".rawHtml")
 
         rawHtmlContainer.innerHTML = ""
+        document.querySelector(".htmlNumbers").innerHTML = ""
 
-        doc.documentElement.innerHTML.split("\n").forEach((line, index) => {
+        doc.documentElement.outerHTML.split("\n").forEach((line, index) => {
 
             let htmlBlock = document.createElement("div")
             let tabs = countTabs(line)
 
-            htmlBlock.innerHTML += `<div class="number">${index}</div>`
+            // htmlBlock.innerHTML += `<div class="number">${index}</div>`
 
             for (let i = 0; i < tabs; i++) {
                 htmlBlock.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -46,6 +49,7 @@ function HtmlPanel() {
                 .replaceAll(">", "&gt;")
                 .replaceAll("~~~", "<")
                 .replaceAll("/~~", ">")
+
 
             line = line.replaceAll("&lt;p", "&lt;<span class='tag'>p</span>")
             line = line.replaceAll("&lt;/p", "&lt;/<span class='tag'>p</span>")
@@ -71,6 +75,8 @@ function HtmlPanel() {
 
             htmlBlock.innerHTML += `<span>${line}</span>`
 
+            document.querySelector(".htmlNumbers").innerHTML += `<div class="number">${index}</div>`
+
             rawHtmlContainer.appendChild(htmlBlock)
 
 
@@ -78,18 +84,69 @@ function HtmlPanel() {
 
     }, [rawHtml])
 
+    function selectElementText(el, win) {
+
+        win = win || window;
+        var doc = win.document, sel, range;
+        if (win.getSelection && doc.createRange) {
+            sel = win.getSelection();
+            range = doc.createRange();
+            range.selectNodeContents(el);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        } else if (doc.body.createTextRange) {
+            range = doc.body.createTextRange();
+            range.moveToElementText(el);
+            range.select();
+        }
+        document.execCommand('copy')
+    }
+
+
+    // const selectHTML = () => {
+    //     let firstBlock = document.querySelector(".rawHtml > div:first-child")
+    //     let lastBlock = document.querySelector(".rawHtml > div:last-child")
+    //
+    //     let range = document.body.createRange()
+    //
+    //     range.setStart(firstBlock, 0)
+    //     range.setEnd(lastBlock, 0)
+    //     range.select()
+    // }
+
     return (
-        <Box maxHeight={"700px"} marginY={"24px"} overflow={"scroll"} backgroundColor={"#282e33"} paddingX={"16px"}>
-            <Typography
-                className={"rawHtml"}
-                color={"#e7c993"}
-                variant={"body1"}
-                fontFamily={"monospace"}
-                component={"div"}
+        <Box>
+            <Button
+                variant="contained"
+                color="success"
+                onClick={() => selectElementText(document.querySelector(".rawHtml"))}
             >
+                Copy HTML
+            </Button>
+            <Grid container direction={"row"} flexWrap={"nowrap"} maxHeight={"700px"} marginY={"24px"}
+                  overflow={"scroll"}
+                  backgroundColor={"#282e33"} paddingX={"16px"}>
 
-            </Typography>
+                <Grid item>
+                    <Typography
+                        className={"htmlNumbers"}
+                        variant={"body1"}
+                        fontFamily={"monospace"}
+                        component={"div"}
+                    ></Typography>
 
+                </Grid>
+
+                <Grid item width={"100%"}>
+                    <Typography
+                        className={"rawHtml"}
+                        color={"#e7c993"}
+                        variant={"body1"}
+                        fontFamily={"monospace"}
+                        component={"div"}
+                    ></Typography>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

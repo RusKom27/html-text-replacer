@@ -48,8 +48,8 @@ function HtmlInput() {
             let isTranslatedIndexes = []
             if (lang === originalLang) return
 
-            document.querySelector(`[data-text]`).classList.remove("translated")
-            document.querySelector(`[data-text]`).classList.remove("not-translated")
+            document.querySelector(`[data-text]`)?.classList.remove("translated")
+            document.querySelector(`[data-text]`)?.classList.remove("not-translated")
 
             translatedTextBlocks[originalLang].forEach((block, index) => {
                 let translatedBlockIndex = null
@@ -65,13 +65,13 @@ function HtmlInput() {
 
                 if (!translatedBlock) {
                     isTranslatedIndexes.push(false)
-                    document.querySelector(`[data-text="${index}"]`).classList.add("not-translated")
+                    document.querySelector(`[data-text="${index}"]`)?.classList.add("not-translated")
                     translatedTextBlocks[lang].push(block)
 
                 } else {
                     translatedTextBlocks[lang].push(translatedBlock)
                     isTranslatedIndexes.push(true)
-                    document.querySelector(`[data-text="${index}"]`).classList.add("translated")
+                    document.querySelector(`[data-text="${index}"]`)?.classList.add("translated")
                     translated++
                 }
 

@@ -23,6 +23,10 @@ function LangDropdown() {
 
         document.querySelectorAll("[data-text]").forEach((elem) => {
             elem.innerText = ` ${translatedTextBlocks[event.target.value][elem.dataset.text]} `
+                .replaceAll("$", " <span class=\"currency\">$</span>")
+                .replaceAll("€", " <span class=\"currency\">$</span>")
+                .replaceAll("euros", " <span class=\"currency\">$</span>")
+                .replaceAll("euro", " <span class=\"currency\">$</span>")
         })
 
     }
