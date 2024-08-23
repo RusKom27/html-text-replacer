@@ -17,8 +17,6 @@ function TranslatesPanel() {
         let availableLangs = {}
 
         translatesTable[0].forEach((key, index) => {
-            if (key === null) return
-
             availableLangs[key] = index
         })
 
@@ -45,7 +43,6 @@ function TranslatesPanel() {
 
                                 <TableRow key={index}>
                                     {row.map((key, index) => {
-                                            if (index === 0) return
                                             return (
                                                 <TableCell key={index}>{key}</TableCell>
                                             )

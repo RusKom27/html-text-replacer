@@ -9,6 +9,17 @@
     word-break: break-word;
 }
 
+.not-translated {
+    background-color: #6c5c55;
+    color: blanchedalmond;
+}
+
+.translated {
+    background-color: blanchedalmond;
+    color: #55616c;
+}
+
+
 .tag {
     color: beige;
 }

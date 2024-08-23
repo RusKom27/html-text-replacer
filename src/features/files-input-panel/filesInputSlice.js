@@ -2,6 +2,8 @@ import {createSlice} from '@reduxjs/toolkit'
 
 const initialState = {
     currentLang: "EN",
+    originalLang: "EN",
+    isTranslatedIndexes: [],
     rawHtml: "",
     textBlocks: [],
     translatedTextBlocks: [],
@@ -27,6 +29,9 @@ export const filesInputSlice = createSlice({
         setCurrentLang: (state, action) => {
             state.currentLang = action.payload
         },
+        setOriginalLang: (state, action) => {
+            state.originalLang = action.payload
+        },
         addTextBlock: (state, action) => {
             state.textBlocks.push(action.payload)
         },
@@ -35,6 +40,9 @@ export const filesInputSlice = createSlice({
         },
         setTranslatedTextBlocks: (state, action) => {
             state.translatedTextBlocks = action.payload
+        },
+        setIsTranslatedIndexes: (state, action) => {
+            state.isTranslatedIndexes = action.payload
         }
     },
 })
@@ -46,7 +54,9 @@ export const {
     setCurrentLang,
     addTextBlock,
     clearTextBlocks,
-    setTranslatedTextBlocks
+    setTranslatedTextBlocks,
+    setOriginalLang,
+    setIsTranslatedIndexes
 } = filesInputSlice.actions
 
 export default filesInputSlice.reducer

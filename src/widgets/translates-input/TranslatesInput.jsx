@@ -1,7 +1,11 @@
 import {Input, InputLabel, Box} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setTranslatedTextBlocks, setTranslatesTable} from "../../features/files-input-panel/filesInputSlice.js";
+import {
+    setTranslatedTextBlocks,
+    setTranslatesTable,
+    setIsTranslatedIndexes
+} from "../../features/files-input-panel/filesInputSlice.js";
 import Typography from "@mui/material/Typography";
 import readXlsxFile from "read-excel-file";
 
@@ -11,6 +15,7 @@ function HtmlInput() {
     const textBlocks = useSelector((state) => state.filesInput.textBlocks)
     const translatesTable = useSelector((state) => state.filesInput.translatesTable)
     const availableLangs = useSelector((state) => state.filesInput.availableLangs)
+    const originalLang = useSelector((state) => state.filesInput.originalLang)
 
     useEffect(() => {
         let translatedTextBlocks = {}
@@ -25,28 +30,30 @@ function HtmlInput() {
 
 
         translatesTable.forEach((row, i) => {
-            if (i === 0) return
-
-
             row.forEach((elem, j) => {
-                if (j === 0 || elem === "" || elem === null) return
-                if (!sortedTranslatesTable[Object.keys(availableLangs)[j - 1]])
-                    sortedTranslatesTable[Object.keys(availableLangs)[j - 1]] = []
+                if (elem === "" || elem === null) return
+                if (!sortedTranslatesTable[Object.keys(availableLangs)[j]])
+                    sortedTranslatesTable[Object.keys(availableLangs)[j]] = []
 
-                sortedTranslatesTable[Object.keys(availableLangs)[j - 1]].push(elem)
+                sortedTranslatesTable[Object.keys(availableLangs)[j]].push(elem)
             })
         })
 
-        translatedTextBlocks[Object.keys(availableLangs)[0]] = textBlocks
+
+        translatedTextBlocks[originalLang] = textBlocks
 
 
         Object.keys(availableLangs).forEach(lang => {
             let translated = 0
-            if (lang === Object.keys(availableLangs)[0]) return
+            let isTranslatedIndexes = []
+            if (lang === originalLang) return
 
-            translatedTextBlocks[Object.keys(availableLangs)[0]].forEach((block) => {
+            document.querySelector(`[data-text]`).classList.remove("translated")
+            document.querySelector(`[data-text]`).classList.remove("not-translated")
+
+            translatedTextBlocks[originalLang].forEach((block, index) => {
                 let translatedBlockIndex = null
-                sortedTranslatesTable[Object.keys(availableLangs)[0]].map((elem, index) => {
+                sortedTranslatesTable[originalLang].map((elem, index) => {
 
                     if (
                         `${block}`.toLowerCase().trim().replaceAll(" ", "") ===
@@ -56,11 +63,15 @@ function HtmlInput() {
 
                 const translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
 
-                if (!translatedBlock)
+                if (!translatedBlock) {
+                    isTranslatedIndexes.push(false)
+                    document.querySelector(`[data-text="${index}"]`).classList.add("not-translated")
                     translatedTextBlocks[lang].push(block)
-                else {
-                    translatedTextBlocks[lang].push(translatedBlock)
 
+                } else {
+                    translatedTextBlocks[lang].push(translatedBlock)
+                    isTranslatedIndexes.push(true)
+                    document.querySelector(`[data-text="${index}"]`).classList.add("translated")
                     translated++
                 }
 
@@ -71,7 +82,7 @@ function HtmlInput() {
 
         dispatch(setTranslatedTextBlocks(translatedTextBlocks))
 
-    }, [textBlocks, translatesTable])
+    }, [textBlocks, translatesTable, originalLang])
 
 
     function handleTranslatesInputChange(event) {
@@ -85,7 +96,10 @@ function HtmlInput() {
         }
 
         readXlsxFile(file).then((rows) => {
-            dispatch(setTranslatesTable(rows))
+
+            console.log(removeEmptyColumns(rows));
+
+            dispatch(setTranslatesTable(removeEmptyColumns(rows)))
             setError("")
         }).catch(error => {
             setError(error)
@@ -105,3 +119,30 @@ function HtmlInput() {
 }
 
 export default HtmlInput
+
+function removeEmptyColumns(array) {
+    const columnsToKeep = [];
+
+    // Проверяем каждый столбец
+    for (let col = 0; col < array[0].length; col++) {
+        let isEmptyColumn = true;
+
+        // Проверяем, есть ли хотя бы один непустой элемент в столбце
+        for (let row = 0; row < array.length; row++) {
+            if (array[row][col] !== null && array[row][col] !== undefined && array[row][col] !== '') {
+                isEmptyColumn = false;
+                break;
+            }
+        }
+
+        // Если столбец не пустой, сохраняем его индекс
+        if (!isEmptyColumn) {
+            columnsToKeep.push(col);
+        }
+    }
+
+    // Создаем новый массив без пустых столбцов
+    const newArray = array.map(row => columnsToKeep.map(col => row[col]));
+
+    return newArray;
+}
