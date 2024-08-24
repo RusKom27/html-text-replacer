@@ -3,14 +3,17 @@ import {useCallback, useEffect, useRef} from "react";
 import Typography from "@mui/material/Typography";
 import {Box, Button, Grid} from "@mui/material";
 import {createBlocks, selectElementText} from "./lib";
+import {setIsTranslatedBlocks} from "../../pages/Translator/lib/index.js";
 
 function HtmlPanel() {
     const reformattedHtml = useSelector((state) => state.filesInput.reformattedHtml)
+    const isTranslatedIndexes = useSelector((state) => state.filesInput.isTranslatedIndexes)
     const root = useRef()
 
     useEffect(() => {
         createBlocks(reformattedHtml, root)
-    }, [reformattedHtml])
+        setIsTranslatedBlocks(isTranslatedIndexes)
+    }, [reformattedHtml, isTranslatedIndexes])
 
     const selectHTML = useCallback(() => {
         selectElementText(root.current)

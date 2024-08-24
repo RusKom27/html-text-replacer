@@ -50,9 +50,6 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
             }
         })
     })
-
-    setIsTranslatedBlocks(isTranslatedIndexes)
-
     return [translatedTextBlocks, isTranslatedIndexes]
 
 }
@@ -69,8 +66,6 @@ const setIsTranslatedBlocks = (isTranslatedIndexes) => {
 
         if (!textBlock) return
 
-        textBlock.classList.remove("translated")
-        textBlock.classList.remove("not-translated")
         textBlock.classList.add(`${isTranslated ? "" : "not-"}translated`)
     })
 
@@ -84,9 +79,9 @@ const reformatRawHtml = (rawHtml, translates) => {
         .querySelectorAll("a, button, p, h1, h2, h3, h4, h5, h6, table, tr, td, th")
         .forEach((elem, index) => {
 
-            translates.forEach((elem) => {
-                console.log(elem);
-            })
+            // translates.forEach((elem) => {
+            //     console.log(elem);
+            // })
 
             elem.innerHTML = elem.innerHTML
                 .replaceAll("\n", " ")
@@ -119,5 +114,6 @@ export {
     translateBlocks,
     sortTranslatesTable,
     reformatRawHtml,
-    getAvailableLangs
+    getAvailableLangs,
+    setIsTranslatedBlocks
 }

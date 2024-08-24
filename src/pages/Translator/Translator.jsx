@@ -4,7 +4,7 @@ import {FilesInputPanel, HtmlPanel, TranslatesPanel} from "../../features/index.
 import {ArrowDropDown} from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import {useEffect} from "react";
-import {getAvailableLangs, reformatRawHtml, sortTranslatesTable, translateBlocks} from "./lib";
+import {getAvailableLangs, reformatRawHtml, setIsTranslatedBlocks, sortTranslatesTable, translateBlocks} from "./lib";
 import {
     addTextBlocks,
     clearTextBlocks, setAvailableLangs,
