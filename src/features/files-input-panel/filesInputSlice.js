@@ -5,9 +5,11 @@ const initialState = {
     originalLang: "EN",
     isTranslatedIndexes: [],
     rawHtml: "",
+    reformattedHtml: "",
     textBlocks: [],
     translatedTextBlocks: [],
     translatesTable: [],
+    sortedTranslatesTable: [],
     availableLangs: {
         "EN": 0
     },
@@ -20,8 +22,14 @@ export const filesInputSlice = createSlice({
         setRawHtml: (state, action) => {
             state.rawHtml = action.payload
         },
+        setReformattedHtml: (state, action) => {
+            state.reformattedHtml = action.payload
+        },
         setTranslatesTable: (state, action) => {
             state.translatesTable = action.payload
+        },
+        setSortedTranslatesTable: (state, action) => {
+            state.sortedTranslatesTable = action.payload
         },
         setAvailableLangs: (state, action) => {
             state.availableLangs = action.payload
@@ -32,8 +40,8 @@ export const filesInputSlice = createSlice({
         setOriginalLang: (state, action) => {
             state.originalLang = action.payload
         },
-        addTextBlock: (state, action) => {
-            state.textBlocks.push(action.payload)
+        addTextBlocks: (state, action) => {
+            state.textBlocks = action.payload
         },
         clearTextBlocks: (state) => {
             state.textBlocks = []
@@ -52,11 +60,13 @@ export const {
     setTranslatesTable,
     setAvailableLangs,
     setCurrentLang,
-    addTextBlock,
+    addTextBlocks,
     clearTextBlocks,
     setTranslatedTextBlocks,
     setOriginalLang,
-    setIsTranslatedIndexes
+    setIsTranslatedIndexes,
+    setSortedTranslatesTable,
+    setReformattedHtml
 } = filesInputSlice.actions
 
 export default filesInputSlice.reducer

@@ -28,6 +28,12 @@
     color: #eaa422;
 }
 
+.header-logo {
+    width: auto;
+    height: 30px;
+    padding: 12px;
+}
+
 .className {
     color: #00b7b7;
 }
@@ -48,5 +54,22 @@
     color: #465059;
     flex-shrink: 0;
     user-select: none;
+    display: none;
+}
 
+.progress-wrapper {
+    height: 18px;
+    border-radius: 4px;
+    margin: 8px;
+    width: 100%;
+    position: relative;
+    background-color: #30373d;
+}
+
+.progress {
+    display: flex;
+    justify-content: center;
+    border-radius: 4px;
+    height: 100%;
+    background-color: #5b8353;
 }

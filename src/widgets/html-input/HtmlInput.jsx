@@ -35,9 +35,7 @@ function HtmlInput() {
         reader.readAsText(file, "UTF-8");
 
         reader.onload = function (e) {
-            const content = e.target.result;
-
-            dispatch(setRawHtml(content))
+            dispatch(setRawHtml(e.target.result))
             setError("")
         };
         reader.onerror = function (e) {

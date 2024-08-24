@@ -1,9 +1,8 @@
-import {InputLabel, Box, MenuItem, Select, Grid} from "@mui/material";
+import {InputLabel, MenuItem, Select, Grid} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-
 import {useEffect} from "react";
 import {setCurrentLang, setOriginalLang} from "../../features/files-input-panel/filesInputSlice.js";
-import {ArrowRightAlt} from "@mui/icons-material";
+import {KeyboardArrowRight} from "@mui/icons-material";
 
 function LangDropdown() {
     const dispatch = useDispatch()
@@ -12,8 +11,8 @@ function LangDropdown() {
     const originalLang = useSelector((state) => state.filesInput.originalLang)
     const translatedTextBlocks = useSelector((state) => state.filesInput.translatedTextBlocks)
 
-
     useEffect(() => {
+        if (!availableLangs) return
         dispatch(setCurrentLang(Object.keys(availableLangs)[0]))
 
     }, [availableLangs])
@@ -28,13 +27,13 @@ function LangDropdown() {
                 .replaceAll("euros", " <span class=\"currency\">$</span>")
                 .replaceAll("euro", " <span class=\"currency\">$</span>")
         })
-
     }
-
 
     function handleOriginalLangDropdownChange(event) {
         dispatch(setOriginalLang(event.target.value))
     }
+
+    if (!availableLangs) return
 
     return (
         <Grid container gap={"16px"} direction={"row"} justifyContent={"center"}>
@@ -48,12 +47,9 @@ function LangDropdown() {
                     })}
                 </Select>
             </Grid>
-
-
             <Grid item marginY={"auto"}>
-                <ArrowRightAlt/>
+                <KeyboardArrowRight/>
             </Grid>
-
             <Grid item>
                 <InputLabel htmlFor={"currentLang"}>Lang</InputLabel>
                 <Select id={'currentLang'} value={currentLang} onChange={handleLangDropdownChange}>
@@ -64,7 +60,6 @@ function LangDropdown() {
                     })}
                 </Select>
             </Grid>
-
         </Grid>
     )
 }

@@ -5,7 +5,7 @@ import '@fontsource/roboto/700.css';
 
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
-import App from '../pages/App.jsx'
+import App from './App.jsx'
 import {store} from './store'
 import {Provider} from 'react-redux'
 import './index.css'
