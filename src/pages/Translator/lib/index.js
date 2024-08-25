@@ -34,12 +34,44 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
         translatedTextBlocks[originalLang].forEach((block) => {
             let translatedBlockIndex = null
+            let splittedBlockIndex = null
+            let isSplitted = false
 
             sortedTranslatesTable[originalLang].map((elem, index) => {
                 if (stringsIsEqual(block, elem)) translatedBlockIndex = index
+
+                if (!translatedBlockIndex && translatedBlockIndex !== 0) {
+                    `${elem}`.split(":").forEach((str, splitIndex) => {
+                        if (`${elem}`.split(":").length === 1) return
+
+
+                        if (splitIndex === 0) str = `${str}:`
+
+                        if (stringsIsEqual(block, str)) {
+                            translatedBlockIndex = index
+                            splittedBlockIndex = splitIndex
+
+
+                            let translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
+
+                            if (translatedBlock) {
+                                isTranslatedIndexes.push(1)
+                                translatedBlock = `${translatedBlock}`.split(":")[splittedBlockIndex] + (splittedBlockIndex === 0 ? ":" : "")
+                                translatedTextBlocks[lang].push(translatedBlock)
+
+                                isSplitted = true
+                            }
+
+                        }
+                    })
+                    
+                }
             })
 
-            const translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
+            if (isSplitted) return
+
+
+            let translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
 
             if (!translatedBlock) {
                 isTranslatedIndexes.push(0)
@@ -48,6 +80,13 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
                 isTranslatedIndexes.push(1)
                 translatedTextBlocks[lang].push(translatedBlock)
             }
+
+            if (translatedTextBlocks[lang].length === 50 && (lang === "ES")) {
+                console.log(translatedTextBlocks[lang][49], " 49")
+                console.log(splittedBlockIndex);
+            }
+
+
         })
     })
     return [translatedTextBlocks, isTranslatedIndexes]
@@ -55,8 +94,16 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 }
 
 const stringsIsEqual = (str1, str2) => {
-    return `${str1}`.toLowerCase().trim().replaceAll(" ", "") ===
-        `${str2}`.toLowerCase().trim().replaceAll(" ", "")
+    return `${str1}`
+            .toLowerCase()
+            .trim()
+            .replaceAll(" ", "")
+            .replaceAll("\n", "") ===
+        `${str2}`
+            .toLowerCase()
+            .trim()
+            .replaceAll(" ", "")
+            .replaceAll("\n", "")
 }
 
 
@@ -71,27 +118,55 @@ const setIsTranslatedBlocks = (isTranslatedIndexes) => {
 
 }
 
-const reformatRawHtml = (rawHtml, translates) => {
+const reformatRawHtml = (rawHtml) => {
     const doc = new DOMParser().parseFromString(rawHtml, "text/html");
     let textBlocks = []
+    let index = 0
 
     doc.getElementsByTagName("html")[0]
         .querySelectorAll("a, button, p, h1, h2, h3, h4, h5, h6, table, tr, td, th")
-        .forEach((elem, index) => {
-
-            // translates.forEach((elem) => {
-            //     console.log(elem);
-            // })
+        .forEach((elem) => {
 
             elem.innerHTML = elem.innerHTML
                 .replaceAll("\n", " ")
                 .replaceAll(" <span class=\"currency\">$</span>", "$")
 
-            const textBlock = elem.innerHTML
+            let child = elem.firstChild
 
-            if (textBlock) textBlocks.push(textBlock.trim())
+            while (child) {
+                if (child.nodeType === 3) {
+                    const textBlock = child.data
+                    if (isNaN(+`${textBlock}`)) {
 
-            elem.innerText = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
+                        if (textBlock) textBlocks.push(textBlock.trim())
+
+                        child.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
+
+                        index++
+                    }
+                } else if (child.nodeType === 1) {
+
+                    let innerChild = child.firstChild
+
+                    while (innerChild) {
+                        if (innerChild.nodeType === 3) {
+                            const textBlock = innerChild.data
+                            if (isNaN(+`${textBlock.replaceAll(" ", "")}`)) {
+                                if (textBlock) textBlocks.push(textBlock.trim())
+
+                                innerChild.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
+
+                                index++
+                            }
+
+                        }
+                        innerChild = innerChild.nextSibling;
+                    }
+                }
+
+
+                child = child.nextSibling;
+            }
         });
 
     return [textBlocks, doc.documentElement.outerHTML]

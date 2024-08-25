@@ -13,6 +13,7 @@ function HtmlPanel() {
     useEffect(() => {
         createBlocks(reformattedHtml, root)
         setIsTranslatedBlocks(isTranslatedIndexes)
+
     }, [reformattedHtml, isTranslatedIndexes])
 
     const selectHTML = useCallback(() => {
