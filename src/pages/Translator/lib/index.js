@@ -9,7 +9,7 @@ const sortTranslatesTable = (translatesTable, availableLangs) => {
 
     translatesTable.forEach((row) => {
         row.forEach((elem, j) => {
-            if (elem === "" || elem === null) return
+            // if (elem === "" || elem === null) return
             if (!sortedTranslatesTable[Object.keys(availableLangs)[j]])
                 sortedTranslatesTable[Object.keys(availableLangs)[j]] = []
 
@@ -32,7 +32,7 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
         if (lang === originalLang) return
 
-        translatedTextBlocks[originalLang].forEach((block) => {
+        translatedTextBlocks[originalLang].forEach((block, BlockIndex) => {
             let translatedBlockIndex = null
             let splittedBlockIndex = null
             let isSplitted = false
@@ -51,7 +51,6 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
                             translatedBlockIndex = index
                             splittedBlockIndex = splitIndex
 
-
                             let translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
 
                             if (translatedBlock) {
@@ -64,7 +63,7 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
                         }
                     })
-                    
+
                 }
             })
 
@@ -73,6 +72,10 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
             let translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
 
+            console.log(sortedTranslatesTable);
+
+            // if ((BlockIndex === 11) && (translatedBlockIndex) && (lang === "ES")) console.log(block, translatedBlock);
+
             if (!translatedBlock) {
                 isTranslatedIndexes.push(0)
                 translatedTextBlocks[lang].push(block)
@@ -80,12 +83,6 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
                 isTranslatedIndexes.push(1)
                 translatedTextBlocks[lang].push(translatedBlock)
             }
-
-            if (translatedTextBlocks[lang].length === 50 && (lang === "ES")) {
-                console.log(translatedTextBlocks[lang][49], " 49")
-                console.log(splittedBlockIndex);
-            }
-
 
         })
     })

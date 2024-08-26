@@ -26,6 +26,7 @@ function LangDropdown() {
                 .replaceAll("€", " <span class=\"currency\">$</span>")
                 .replaceAll("euros", " <span class=\"currency\">$</span>")
                 .replaceAll("euro", " <span class=\"currency\">$</span>")
+                .replaceAll("undefined", "")
         })
     }
 
