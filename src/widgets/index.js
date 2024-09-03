@@ -4,5 +4,6 @@ import TranslatesProgress from "./translates-progress/TranslatesProgress.jsx";
 import HtmlInput from "./html-input/HtmlInput.jsx";
 import LangDropdown from "./lang-dropdown/LangDropdown.jsx";
 import Sidebar from "./sidebar/Sidebar.jsx";
+import TranslateButton from "./translate-button/TranslateButton.jsx";
 
-export {Header, TranslatesInput, TranslatesProgress, HtmlInput, LangDropdown, Sidebar}
+export {Header, TranslatesInput, TranslatesProgress, HtmlInput, LangDropdown, Sidebar, TranslateButton}

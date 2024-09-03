@@ -1,4 +1,48 @@
 
+.input-wrapper {
+    width: 100%;
+}
+
+
+.listFile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px;
+}
+
+.listFile:hover {
+    background-color: #465059;
+    color: azure;
+    transition: 0.1s ease;
+    cursor: pointer;
+
+}
+
+.removeFile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    border-radius: 3px;
+    transition: 0.1s ease;
+    cursor: pointer;
+    color: #465059;
+    background-color: azure;
+    opacity: 0;
+}
+
+.listFile:hover .removeFile, .listFile.active .removeFile {
+    opacity: 1;
+}
+
+.listFile.active {
+    background-color: #465059;
+    color: azure;
+}
+
+
 .selected {
     display: inline-block;
     color: azure;

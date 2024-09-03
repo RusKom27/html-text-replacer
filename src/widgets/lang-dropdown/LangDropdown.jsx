@@ -9,7 +9,6 @@ function LangDropdown() {
     const availableLangs = useSelector((state) => state.filesInput.availableLangs)
     const currentLang = useSelector((state) => state.filesInput.currentLang)
     const originalLang = useSelector((state) => state.filesInput.originalLang)
-    const translatedTextBlocks = useSelector((state) => state.filesInput.translatedTextBlocks)
 
     useEffect(() => {
         if (!availableLangs) return
@@ -19,15 +18,6 @@ function LangDropdown() {
 
     function handleLangDropdownChange(event) {
         dispatch(setCurrentLang(event.target.value))
-
-        document.querySelectorAll("[data-text]").forEach((elem) => {
-            elem.innerText = ` ${translatedTextBlocks[event.target.value][elem.dataset.text]} `
-                .replaceAll("$", " <span class=\"currency\">$</span>")
-                .replaceAll("€", " <span class=\"currency\">$</span>")
-                .replaceAll("euros", " <span class=\"currency\">$</span>")
-                .replaceAll("euro", " <span class=\"currency\">$</span>")
-                .replaceAll("undefined", "")
-        })
     }
 
     function handleOriginalLangDropdownChange(event) {

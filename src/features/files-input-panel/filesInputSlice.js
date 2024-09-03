@@ -13,6 +13,8 @@ const initialState = {
     availableLangs: {
         "EN": 0
     },
+    htmlFiles: localStorage.getItem('htmlFiles') ? JSON.parse(localStorage.getItem('htmlFiles')) : {},
+    translatesFiles: localStorage.getItem('translatesFiles') ? JSON.parse(localStorage.getItem('translatesFiles')) : {}
 }
 
 export const filesInputSlice = createSlice({
@@ -51,7 +53,24 @@ export const filesInputSlice = createSlice({
         },
         setIsTranslatedIndexes: (state, action) => {
             state.isTranslatedIndexes = action.payload
+        },
+        addHtmlFile: (state, action) => {
+            state.htmlFiles = {...state.htmlFiles, ...action.payload}
+            localStorage.setItem('htmlFiles', JSON.stringify(state.htmlFiles))
+        },
+        addTranslatesFile: (state, action) => {
+            state.translatesFiles = {...state.translatesFiles, ...action.payload}
+            localStorage.setItem('translatesFiles', JSON.stringify(state.translatesFiles))
+        },
+        removeHtmlFile: (state, action) => {
+            delete state.htmlFiles[action.payload]
+            localStorage.setItem('htmlFiles', JSON.stringify(state.htmlFiles))
+        },
+        removeTranslatesFile: (state, action) => {
+            delete state.translatesFiles[action.payload]
+            localStorage.setItem('translatesFiles', JSON.stringify(state.translatesFiles))
         }
+
     },
 })
 
@@ -66,7 +85,11 @@ export const {
     setOriginalLang,
     setIsTranslatedIndexes,
     setSortedTranslatesTable,
-    setReformattedHtml
+    setReformattedHtml,
+    addHtmlFile,
+    addTranslatesFile,
+    removeHtmlFile,
+    removeTranslatesFile,
 } = filesInputSlice.actions
 
 export default filesInputSlice.reducer

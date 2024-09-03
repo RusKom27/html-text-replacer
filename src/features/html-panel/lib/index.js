@@ -10,17 +10,35 @@ const createBlockFromLine = (line) => {
     return htmlBlock
 }
 
-const createBlocks = (reformattedHtml, root) => {
+const createBlocks = (reformattedHtml, currentLang, translatedTextBlocks) => {
+
+    const root = document.getElementById("htmlRoot")
 
     if (!reformattedHtml) return
 
-    let rawHtmlContainer = root.current
-
-    rawHtmlContainer.innerHTML = ""
+    root.innerHTML = ""
 
     reformattedHtml.split("\n").forEach((line) => {
-        rawHtmlContainer.appendChild(createBlockFromLine(line))
+        root.appendChild(createBlockFromLine(line))
     })
+
+
+    document.querySelectorAll("[data-text]").forEach((elem) => {
+        elem.innerText = reformatTextBlock(` ${translatedTextBlocks[currentLang][elem.dataset.text]} `)
+    })
+}
+
+
+const reformatTextBlock = (textBlock) => {
+    let newTextBlock = textBlock;
+
+    ["$", "€"].forEach((currency) => {
+        newTextBlock = newTextBlock.replaceAll(currency, `<span class="currency">${currency}</span>`)
+    });
+
+    ["undefined"].forEach((removeBlock) => newTextBlock = newTextBlock.replaceAll(removeBlock, ""))
+
+    return newTextBlock
 }
 
 

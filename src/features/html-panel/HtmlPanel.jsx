@@ -1,20 +1,16 @@
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {useCallback, useEffect, useRef} from "react";
 import Typography from "@mui/material/Typography";
 import {Box, Button, Grid} from "@mui/material";
-import {createBlocks, selectElementText} from "./lib";
-import {setIsTranslatedBlocks} from "../../pages/Translator/lib/index.js";
+import {selectElementText} from "./lib";
 
 function HtmlPanel() {
-    const reformattedHtml = useSelector((state) => state.filesInput.reformattedHtml)
-    const isTranslatedIndexes = useSelector((state) => state.filesInput.isTranslatedIndexes)
     const root = useRef()
 
     useEffect(() => {
-        createBlocks(reformattedHtml, root)
-        setIsTranslatedBlocks(isTranslatedIndexes)
 
-    }, [reformattedHtml, isTranslatedIndexes])
+    }, [root])
+
 
     const selectHTML = useCallback(() => {
         selectElementText(root.current)
@@ -36,6 +32,7 @@ function HtmlPanel() {
 
                 <Typography
                     className={"rawHtml"}
+                    id={"htmlRoot"}
                     ref={root}
                     color={"#e7c993"}
                     variant={"body3"}

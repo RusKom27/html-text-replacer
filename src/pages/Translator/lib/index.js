@@ -32,7 +32,7 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
         if (lang === originalLang) return
 
-        translatedTextBlocks[originalLang].forEach((block, BlockIndex) => {
+        translatedTextBlocks[originalLang].forEach((block) => {
             let translatedBlockIndex = null
             let splittedBlockIndex = null
             let isSplitted = false
@@ -71,8 +71,6 @@ const translateBlocks = (sortedTranslatesTable, availableLangs, originalLang, te
 
 
             let translatedBlock = sortedTranslatesTable[lang][translatedBlockIndex]
-
-            console.log(sortedTranslatesTable);
 
             // if ((BlockIndex === 11) && (translatedBlockIndex) && (lang === "ES")) console.log(block, translatedBlock);
 
@@ -130,43 +128,50 @@ const reformatRawHtml = (rawHtml) => {
 
             let child = elem.firstChild
 
-            while (child) {
-                if (child.nodeType === 3) {
-                    const textBlock = child.data
-                    if (isNaN(+`${textBlock}`)) {
+            index = addTextBlocksFromHtmlTag(textBlocks, child, index)
 
-                        if (textBlock) textBlocks.push(textBlock.trim())
-
-                        child.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
-
-                        index++
-                    }
-                } else if (child.nodeType === 1) {
-
-                    let innerChild = child.firstChild
-
-                    while (innerChild) {
-                        if (innerChild.nodeType === 3) {
-                            const textBlock = innerChild.data
-                            if (isNaN(+`${textBlock.replaceAll(" ", "")}`)) {
-                                if (textBlock) textBlocks.push(textBlock.trim())
-
-                                innerChild.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
-
-                                index++
-                            }
-
-                        }
-                        innerChild = innerChild.nextSibling;
-                    }
-                }
-
-
-                child = child.nextSibling;
-            }
         });
 
     return [textBlocks, doc.documentElement.outerHTML]
+}
+
+const addTextBlocksFromHtmlTag = (textBlocks, child, index) => {
+    while (child) {
+        if ((child.nodeType === 3) && (child.nodeName !== "SCRIPT")) {
+            const textBlock = child.data
+            if (isNaN(+`${textBlock}`)) {
+
+                if (textBlock) textBlocks.push(textBlock.trim())
+
+                child.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
+
+                index++
+            }
+        } else if ((child.nodeType === 1) && (child.nodeName !== "SCRIPT")) {
+
+            let innerChild = child.firstChild
+
+            while (innerChild) {
+                if (innerChild.nodeType === 3) {
+                    const textBlock = innerChild.data
+                    if (isNaN(+`${textBlock.replaceAll(" ", "")}`)) {
+                        if (textBlock) textBlocks.push(textBlock.trim())
+
+                        innerChild.data = `~~~span class='selected' data-text='${index}' /~~ ${textBlock} ~~~/span/~~`;
+
+                        index++
+                    }
+
+                }
+                innerChild = innerChild.nextSibling;
+            }
+        }
+
+
+        child = child.nextSibling;
+    }
+
+    return index
 }
 
 const getAvailableLangs = (translatesTable) => {
