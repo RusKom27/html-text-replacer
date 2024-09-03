@@ -118,6 +118,10 @@ const reformatRawHtml = (rawHtml) => {
     let textBlocks = []
     let index = 0
 
+    index = addTextBlocksFromHtmlHead(textBlocks, doc.head, index)
+
+    index = addTextBlocksFromHtmlInputs(textBlocks, doc.body, index)
+
     doc.getElementsByTagName("html")[0]
         .querySelectorAll("a, button, p, h1, h2, h3, h4, h5, h6, table, tr, td, th")
         .forEach((elem) => {
@@ -133,6 +137,62 @@ const reformatRawHtml = (rawHtml) => {
         });
 
     return [textBlocks, doc.documentElement.outerHTML]
+}
+
+
+const addTextBlocksFromHtmlInputs = (textBlocks, child, index) => {
+    child.querySelectorAll("input").forEach((elem) => {
+        textBlocks.push(elem.getAttribute("placeholder"))
+        elem.setAttribute("placeholder", `~~~span class='selected' data-text='${index}' /~~ ${elem.getAttribute("placeholder")} ~~~/span/~~`)
+        index++
+    })
+
+    return index
+}
+
+const addTextBlocksFromHtmlHead = (textBlocks, head, index) => {
+    textBlocks.push(head.querySelector("title").innerText)
+    head.querySelector("title").innerText = `~~~span class='selected' data-text='${index}' /~~ ${head.querySelector("title").innerText} ~~~/span/~~`
+    index++
+
+    head.querySelectorAll("meta[content]").forEach((elem) => {
+        textBlocks.push(elem.getAttribute("content"))
+        elem.setAttribute("content", `~~~span class='selected' data-text='${index}' /~~ ${elem.getAttribute("content")} ~~~/span/~~`)
+        index++
+    })
+
+    head.querySelectorAll("script").forEach(elem => {
+        const nameRegex = /"name": "(.*?)",/g;
+
+        for (const match of elem.innerText.matchAll(nameRegex)) {
+            const name = match[1];
+            textBlocks.push(name)
+            elem.innerText = elem.innerText.replaceAll(
+                `"name": "${name}",`,
+                `"name": "~~~span class='selected' data-text='${index}' /~~ ${name} ~~~/span/~~",`
+            )
+
+            index++
+        }
+
+        const textRegex = /"<p>(.*?)<\/p>"/g;
+
+        for (const match of elem.innerText.matchAll(textRegex)) {
+
+            console.log(match)
+
+            const name = match[1];
+            textBlocks.push(name)
+            elem.innerText = elem.innerText.replaceAll(
+                `"<p>${name}</p>"`,
+                `"<p>~~~span class='selected' data-text='${index}' /~~ ${name} ~~~/span/~~</p>"`
+            )
+
+            index++
+        }
+    })
+
+    return index
 }
 
 const addTextBlocksFromHtmlTag = (textBlocks, child, index) => {

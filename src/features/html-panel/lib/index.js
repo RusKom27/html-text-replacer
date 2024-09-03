@@ -22,7 +22,6 @@ const createBlocks = (reformattedHtml, currentLang, translatedTextBlocks) => {
         root.appendChild(createBlockFromLine(line))
     })
 
-
     document.querySelectorAll("[data-text]").forEach((elem) => {
         elem.innerText = reformatTextBlock(` ${translatedTextBlocks[currentLang][elem.dataset.text]} `)
     })
@@ -50,10 +49,12 @@ const reformatLine = (line) => {
         .replaceAll("~~~", "<")
         .replaceAll("/~~", ">");
 
+
     ["p", "h1", "h2", "h3", "h4", "h5", "h6"].forEach((tag) => {
         line = line.replaceAll(`&lt;${tag}`, `&lt;<span class='tag'>${tag}</span>`)
         line = line.replaceAll(`&lt;/${tag}`, `&lt;/<span class='tag'>${tag}</span>`)
     })
+
     return line
 }
 
