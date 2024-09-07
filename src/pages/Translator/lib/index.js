@@ -141,7 +141,10 @@ const reformatRawHtml = (rawHtml) => {
 
 
 const addTextBlocksFromHtmlInputs = (textBlocks, child, index) => {
-    child.querySelectorAll("input").forEach((elem) => {
+    child.querySelectorAll("input[placeholder]").forEach((elem) => {
+
+        if (!elem.getAttribute("placeholder")) return
+
         textBlocks.push(elem.getAttribute("placeholder"))
         elem.setAttribute("placeholder", `~~~span class='selected' data-text='${index}' /~~ ${elem.getAttribute("placeholder")} ~~~/span/~~`)
         index++
